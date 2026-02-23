@@ -2,6 +2,7 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "marcel",
   "title": "Marcel",
+  "version": "1.0.0",
   "description": "Manage your Marcel quests directly from Raycast. View your quest list and complete tasks without leaving your keyboard.",
   "icon": "icon.png",
   "author": "saravenpi",
