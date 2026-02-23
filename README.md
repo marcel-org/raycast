@@ -12,7 +12,7 @@ Manage your Marcel quests from Raycast.
 
 ## Setup
 
-1. Get your Marcel API token from https://marcel.up.railway.app
+1. Get your Marcel API token from https://marcel.my
 2. Install and configure:
 
 ```bash

@@ -33,8 +33,8 @@
       "required": false,
       "title": "API URL",
       "description": "Marcel API base URL (leave empty for default production URL)",
-      "default": "https://marcel.up.railway.app",
-      "placeholder": "https://marcel.up.railway.app"
+      "default": "https://api.marcel.my",
+      "placeholder": "https://api.marcel.my"
     }
   ],
   "dependencies": {
