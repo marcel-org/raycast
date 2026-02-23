@@ -1,5 +1,5 @@
 import React from "react";
-import { List, ActionPanel, Action, Icon, openExtensionPreferences } from "@raycast/api";
+import { List, ActionPanel, Action, Icon, openExtensionPreferences, confirmAlert, Alert } from "@raycast/api";
 import { Quest } from "../types";
 import { getDifficultyIcon, getDifficultyColor, getStatusIcon, getStatusColor, getQuestSubtitle } from "../utils";
 
@@ -8,10 +8,18 @@ interface QuestListItemProps {
   onComplete: (quest: Quest) => Promise<void>;
   onUncomplete: (quest: Quest) => Promise<void>;
   onUpdateStatus: (quest: Quest, status: Quest["status"]) => Promise<void>;
+  onDelete: (quest: Quest) => Promise<void>;
   onRefresh: () => void;
 }
 
-export function QuestListItem({ quest, onComplete, onUncomplete, onUpdateStatus, onRefresh }: QuestListItemProps) {
+export function QuestListItem({
+  quest,
+  onComplete,
+  onUncomplete,
+  onUpdateStatus,
+  onDelete,
+  onRefresh,
+}: QuestListItemProps) {
   const difficultyIcon = getDifficultyIcon(quest.difficulty);
   const difficultyColor = getDifficultyColor(quest.difficulty);
   const statusIcon = quest.done ? Icon.CheckCircle : getStatusIcon(quest.status);
@@ -85,6 +93,29 @@ export function QuestListItem({ quest, onComplete, onUncomplete, onUpdateStatus,
               <Action.CopyToClipboard title="Copy Note" content={quest.note} />
             </ActionPanel.Section>
           )}
+
+          <ActionPanel.Section>
+            <Action
+              title="Delete Quest"
+              icon={Icon.Trash}
+              style={Action.Style.Destructive}
+              shortcut={{ modifiers: ["ctrl"], key: "x" }}
+              onAction={async () => {
+                if (
+                  await confirmAlert({
+                    title: "Delete Quest",
+                    message: `Are you sure you want to delete "${quest.title}"? This action cannot be undone.`,
+                    primaryAction: {
+                      title: "Delete",
+                      style: Alert.ActionStyle.Destructive,
+                    },
+                  })
+                ) {
+                  await onDelete(quest);
+                }
+              }}
+            />
+          </ActionPanel.Section>
 
           <ActionPanel.Section>
             <Action title="Open Extension Preferences" onAction={openExtensionPreferences} />

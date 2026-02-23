@@ -1,10 +1,11 @@
 import React from "react";
 import { List, ActionPanel, Action, Icon, showToast, Toast, openExtensionPreferences } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { fetchQuests, completeQuest, uncompleteQuest, updateQuestStatus } from "./api";
+import { fetchQuests, completeQuest, uncompleteQuest, updateQuestStatus, deleteQuest } from "./api";
 import { Quest } from "./types";
 import { sortQuests } from "./utils";
 import { QuestListItem } from "./components/QuestListItem";
+import { CreateQuestForm } from "./components/CreateQuestForm";
 
 export default function QuestsCommand() {
   const { isLoading, data: quests, error, revalidate, mutate } = useCachedPromise(fetchQuests);
@@ -78,6 +79,29 @@ export default function QuestsCommand() {
     }
   }
 
+  async function handleDeleteQuest(quest: Quest) {
+    const toast = await showToast({
+      style: Toast.Style.Animated,
+      title: "Deleting quest...",
+    });
+
+    try {
+      await deleteQuest(quest.id);
+
+      await mutate(fetchQuests(), {
+        optimisticUpdate: (data) => data?.filter((q) => q.id !== quest.id) || [],
+      });
+
+      toast.style = Toast.Style.Success;
+      toast.title = "Quest deleted";
+      toast.message = `"${quest.title}" has been deleted`;
+    } catch (err) {
+      toast.style = Toast.Style.Failure;
+      toast.title = "Failed to delete quest";
+      toast.message = err instanceof Error ? err.message : "Unknown error";
+    }
+  }
+
   if (error && error.message.includes("Invalid API token")) {
     return (
       <List>
@@ -101,12 +125,25 @@ export default function QuestsCommand() {
   const doneQuests = sortedQuests.filter((q) => q.done || q.status === "done");
 
   return (
-    <List isLoading={isLoading} searchBarPlaceholder="Search quests...">
+    <List
+      isLoading={isLoading}
+      searchBarPlaceholder="Search quests..."
+      actions={
+        <ActionPanel>
+          <Action.Push
+            title="Create New Quest"
+            icon={Icon.Plus}
+            shortcut={{ modifiers: ["cmd"], key: "n" }}
+            target={<CreateQuestForm onSuccess={revalidate} />}
+          />
+        </ActionPanel>
+      }
+    >
       {!isLoading && sortedQuests.length === 0 && (
         <List.EmptyView
           icon={Icon.CheckCircle}
           title="No quests found"
-          description="You don't have any quests yet. Create one in the Marcel app!"
+          description="You don't have any quests yet. Create one using Cmd+N or in the Marcel app!"
         />
       )}
 
@@ -119,6 +156,7 @@ export default function QuestsCommand() {
               onComplete={handleCompleteQuest}
               onUncomplete={handleUncompleteQuest}
               onUpdateStatus={handleUpdateStatus}
+              onDelete={handleDeleteQuest}
               onRefresh={revalidate}
             />
           ))}
@@ -134,6 +172,7 @@ export default function QuestsCommand() {
               onComplete={handleCompleteQuest}
               onUncomplete={handleUncompleteQuest}
               onUpdateStatus={handleUpdateStatus}
+              onDelete={handleDeleteQuest}
               onRefresh={revalidate}
             />
           ))}
@@ -149,6 +188,7 @@ export default function QuestsCommand() {
               onComplete={handleCompleteQuest}
               onUncomplete={handleUncompleteQuest}
               onUpdateStatus={handleUpdateStatus}
+              onDelete={handleDeleteQuest}
               onRefresh={revalidate}
             />
           ))}

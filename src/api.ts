@@ -117,3 +117,60 @@ export async function updateQuestStatus(questId: number, status: "todo" | "doing
   const data: QuestResponse = await response.json();
   return data.quest;
 }
+
+export async function deleteQuest(questId: number): Promise<void> {
+  const apiUrl = getApiUrl();
+  const response = await fetch(`${apiUrl}/quest/${questId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("Invalid API token. Please check your preferences.");
+    }
+    if (response.status === 403) {
+      throw new Error("You don't have permission to delete this quest.");
+    }
+    if (response.status === 404) {
+      throw new Error("Quest not found.");
+    }
+    throw new Error(`Failed to delete quest: ${response.statusText}`);
+  }
+}
+
+export interface CreateQuestPayload {
+  title: string;
+  note?: string;
+  difficulty?: "easy" | "medium" | "hard" | "epic" | "legendary";
+  status?: "todo" | "doing" | "done";
+  date?: string;
+  time?: string;
+  spaceId?: number;
+  journeyId?: number;
+}
+
+export async function createQuest(payload: CreateQuestPayload): Promise<Quest> {
+  const apiUrl = getApiUrl();
+  const response = await fetch(`${apiUrl}/quest`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("Invalid API token. Please check your preferences.");
+    }
+    if (response.status === 403) {
+      throw new Error("You don't have permission to create quests.");
+    }
+    if (response.status === 400) {
+      throw new Error("Invalid quest data. Please check your input.");
+    }
+    throw new Error(`Failed to create quest: ${response.statusText}`);
+  }
+
+  const data: QuestResponse = await response.json();
+  return data.quest;
+}
