@@ -2,6 +2,7 @@ import React from "react";
 import { List, ActionPanel, Action, Icon, openExtensionPreferences, confirmAlert, Alert } from "@raycast/api";
 import { Quest } from "../types";
 import { getDifficultyIcon, getDifficultyColor, getStatusIcon, getStatusColor, getQuestSubtitle } from "../utils";
+import { CreateQuestForm } from "./CreateQuestForm";
 
 interface QuestListItemProps {
   quest: Quest;
@@ -68,6 +69,12 @@ export function QuestListItem({
               />
             )}
             <Action title="Refresh" icon={Icon.ArrowClockwise} onAction={onRefresh} />
+            <Action.Push
+              title="Create New Quest"
+              icon={Icon.Plus}
+              shortcut={{ modifiers: ["cmd"], key: "n" }}
+              target={<CreateQuestForm onSuccess={onRefresh} />}
+            />
           </ActionPanel.Section>
 
           {!quest.done && (
