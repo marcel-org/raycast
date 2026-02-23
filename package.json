@@ -6,7 +6,7 @@
   "description": "Manage your Marcel quests directly from Raycast. View your quest list and complete tasks without leaving your keyboard.",
   "icon": "icon.png",
   "author": "saravenpi",
-  "owner": "saravenpi",
+  "access": "public",
   "categories": [
     "Productivity",
     "Applications"
