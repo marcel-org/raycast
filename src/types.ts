@@ -41,8 +41,3 @@ export interface QuestsResponse {
 export interface QuestResponse {
   quest: Quest;
 }
-
-export interface Preferences {
-  apiToken: string;
-  apiUrl?: string;
-}

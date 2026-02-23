@@ -1,5 +1,5 @@
 import { getPreferenceValues, showToast, Toast } from "@raycast/api";
-import { Quest, QuestsResponse, QuestResponse, Preferences } from "./types";
+import { Quest, QuestsResponse, QuestResponse } from "./types";
 
 const DEFAULT_API_URL = "https://api.marcel.my";
 

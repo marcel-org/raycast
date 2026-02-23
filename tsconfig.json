@@ -11,6 +11,6 @@
     "resolveJsonModule": true,
     "lib": ["ES2020"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "raycast-env.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

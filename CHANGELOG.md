@@ -1,6 +1,6 @@
 # Marcel Changelog
 
-## [Initial Version] - 2025-02-23
+## [Initial Version] - {PR_MERGE_DATE}
 
 ### Added
 
