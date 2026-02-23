@@ -5,3 +5,4 @@ dist/
 .raycast/
 *.md
 !README.md
+!PUBLISHING.md
