@@ -12,8 +12,8 @@ interface QuestListItemProps {
 export function QuestListItem({ quest, onComplete, onUpdateStatus, onRefresh }: QuestListItemProps) {
   const difficultyIcon = getDifficultyIcon(quest.difficulty);
   const difficultyColor = getDifficultyColor(quest.difficulty);
-  const statusIcon = getStatusIcon(quest.status);
-  const statusColor = getStatusColor(quest.status);
+  const statusIcon = quest.done ? Icon.CheckCircle : getStatusIcon(quest.status);
+  const statusColor = quest.done ? getStatusColor("done") : getStatusColor(quest.status);
 
   const accessories: List.Item.Accessory[] = [
     {
