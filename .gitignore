@@ -6,3 +6,4 @@ dist/
 *.md
 !README.md
 !PUBLISHING.md
+!CHANGELOG.md
