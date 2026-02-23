@@ -64,21 +64,17 @@ export function QuestListItem({ quest, onComplete, onUncomplete, onUpdateStatus,
           {!quest.done && (
             <ActionPanel.Section title="Change Status">
               {quest.status !== "todo" && (
-                <Action title="Mark as To Do" icon={Icon.Circle} onAction={() => onUpdateStatus(quest, "todo")} />
+                <Action title="Mark as to Do" icon={Icon.Circle} onAction={() => onUpdateStatus(quest, "todo")} />
               )}
               {quest.status !== "doing" && (
                 <Action
-                  title="Mark as In Progress"
+                  title="Mark as in Progress"
                   icon={Icon.CircleProgress50}
                   onAction={() => onUpdateStatus(quest, "doing")}
                 />
               )}
               {quest.status !== "done" && (
-                <Action
-                  title="Mark as Done"
-                  icon={Icon.CheckCircle}
-                  onAction={() => onUpdateStatus(quest, "done")}
-                />
+                <Action title="Mark as Done" icon={Icon.CheckCircle} onAction={() => onUpdateStatus(quest, "done")} />
               )}
             </ActionPanel.Section>
           )}

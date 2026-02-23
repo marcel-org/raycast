@@ -17,15 +17,9 @@ export default function QuestsCommand() {
     try {
       const updatedQuest = await completeQuest(quest.id);
 
-      await mutate(
-        async () => {
-          const allQuests = await fetchQuests();
-          return allQuests;
-        },
-        {
-          optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
-        }
-      );
+      await mutate(fetchQuests(), {
+        optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
+      });
 
       toast.style = Toast.Style.Success;
       toast.title = "Quest Completed!";
@@ -46,15 +40,9 @@ export default function QuestsCommand() {
     try {
       const updatedQuest = await uncompleteQuest(quest.id);
 
-      await mutate(
-        async () => {
-          const allQuests = await fetchQuests();
-          return allQuests;
-        },
-        {
-          optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
-        }
-      );
+      await mutate(fetchQuests(), {
+        optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
+      });
 
       toast.style = Toast.Style.Success;
       toast.title = "Quest Reopened";
@@ -75,15 +63,9 @@ export default function QuestsCommand() {
     try {
       const updatedQuest = await updateQuestStatus(quest.id, newStatus);
 
-      await mutate(
-        async () => {
-          const allQuests = await fetchQuests();
-          return allQuests;
-        },
-        {
-          optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
-        }
-      );
+      await mutate(fetchQuests(), {
+        optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
+      });
 
       toast.style = Toast.Style.Success;
       toast.title = "Quest updated";

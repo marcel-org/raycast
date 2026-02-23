@@ -11,7 +11,7 @@ function getApiUrl(): string {
 function getAuthHeaders(): HeadersInit {
   const preferences = getPreferenceValues<Preferences>();
   return {
-    "Authorization": `Bearer ${preferences.apiToken}`,
+    Authorization: `Bearer ${preferences.apiToken}`,
     "Content-Type": "application/json",
   };
 }
