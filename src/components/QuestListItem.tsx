@@ -1,3 +1,4 @@
+import React from "react";
 import { List, ActionPanel, Action, Icon, openExtensionPreferences } from "@raycast/api";
 import { Quest } from "../types";
 import { getDifficultyIcon, getDifficultyColor, getStatusIcon, getStatusColor, getQuestSubtitle } from "../utils";

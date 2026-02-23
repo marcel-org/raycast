@@ -1,3 +1,4 @@
+import React from "react";
 import { List, ActionPanel, Action, Icon, showToast, Toast, openExtensionPreferences } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
 import { fetchQuests, completeQuest, uncompleteQuest, updateQuestStatus } from "./api";
