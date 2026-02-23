@@ -1,0 +1,91 @@
+import { List, ActionPanel, Action, Icon, openExtensionPreferences } from "@raycast/api";
+import { Quest } from "../types";
+import { getDifficultyIcon, getDifficultyColor, getStatusIcon, getStatusColor, getQuestSubtitle } from "../utils";
+
+interface QuestListItemProps {
+  quest: Quest;
+  onComplete: (quest: Quest) => Promise<void>;
+  onUpdateStatus: (quest: Quest, status: Quest["status"]) => Promise<void>;
+  onRefresh: () => void;
+}
+
+export function QuestListItem({ quest, onComplete, onUpdateStatus, onRefresh }: QuestListItemProps) {
+  const difficultyIcon = getDifficultyIcon(quest.difficulty);
+  const difficultyColor = getDifficultyColor(quest.difficulty);
+  const statusIcon = getStatusIcon(quest.status);
+  const statusColor = getStatusColor(quest.status);
+
+  const accessories: List.Item.Accessory[] = [
+    {
+      icon: { source: difficultyIcon, tintColor: difficultyColor },
+      tooltip: `Difficulty: ${quest.difficulty}`,
+    },
+    {
+      text: `${quest.xpReward} XP`,
+      tooltip: `XP Reward: ${quest.xpReward}`,
+    },
+  ];
+
+  if (quest.goldReward) {
+    accessories.push({
+      text: `${quest.goldReward} Gold`,
+      tooltip: `Gold Reward: ${quest.goldReward}`,
+    });
+  }
+
+  return (
+    <List.Item
+      icon={{ source: statusIcon, tintColor: statusColor }}
+      title={quest.title}
+      subtitle={getQuestSubtitle(quest)}
+      accessories={accessories}
+      actions={
+        <ActionPanel>
+          <ActionPanel.Section>
+            {!quest.done && (
+              <Action
+                title="Complete Quest"
+                icon={Icon.CheckCircle}
+                shortcut={{ modifiers: ["cmd"], key: "return" }}
+                onAction={() => onComplete(quest)}
+              />
+            )}
+            <Action title="Refresh" icon={Icon.ArrowClockwise} onAction={onRefresh} />
+          </ActionPanel.Section>
+
+          {!quest.done && (
+            <ActionPanel.Section title="Change Status">
+              {quest.status !== "todo" && (
+                <Action title="Mark as To Do" icon={Icon.Circle} onAction={() => onUpdateStatus(quest, "todo")} />
+              )}
+              {quest.status !== "doing" && (
+                <Action
+                  title="Mark as In Progress"
+                  icon={Icon.CircleProgress50}
+                  onAction={() => onUpdateStatus(quest, "doing")}
+                />
+              )}
+              {quest.status !== "done" && (
+                <Action
+                  title="Mark as Done"
+                  icon={Icon.CheckCircle}
+                  onAction={() => onUpdateStatus(quest, "done")}
+                />
+              )}
+            </ActionPanel.Section>
+          )}
+
+          {quest.note && (
+            <ActionPanel.Section>
+              <Action.CopyToClipboard title="Copy Note" content={quest.note} />
+            </ActionPanel.Section>
+          )}
+
+          <ActionPanel.Section>
+            <Action title="Open Extension Preferences" onAction={openExtensionPreferences} />
+          </ActionPanel.Section>
+        </ActionPanel>
+      }
+    />
+  );
+}
