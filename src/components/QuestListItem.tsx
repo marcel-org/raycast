@@ -5,11 +5,12 @@ import { getDifficultyIcon, getDifficultyColor, getStatusIcon, getStatusColor, g
 interface QuestListItemProps {
   quest: Quest;
   onComplete: (quest: Quest) => Promise<void>;
+  onUncomplete: (quest: Quest) => Promise<void>;
   onUpdateStatus: (quest: Quest, status: Quest["status"]) => Promise<void>;
   onRefresh: () => void;
 }
 
-export function QuestListItem({ quest, onComplete, onUpdateStatus, onRefresh }: QuestListItemProps) {
+export function QuestListItem({ quest, onComplete, onUncomplete, onUpdateStatus, onRefresh }: QuestListItemProps) {
   const difficultyIcon = getDifficultyIcon(quest.difficulty);
   const difficultyColor = getDifficultyColor(quest.difficulty);
   const statusIcon = quest.done ? Icon.CheckCircle : getStatusIcon(quest.status);
@@ -42,7 +43,14 @@ export function QuestListItem({ quest, onComplete, onUpdateStatus, onRefresh }: 
       actions={
         <ActionPanel>
           <ActionPanel.Section>
-            {!quest.done && (
+            {quest.done ? (
+              <Action
+                title="Reopen Quest"
+                icon={Icon.ArrowCounterClockwise}
+                shortcut={{ modifiers: ["cmd"], key: "return" }}
+                onAction={() => onUncomplete(quest)}
+              />
+            ) : (
               <Action
                 title="Complete Quest"
                 icon={Icon.CheckCircle}

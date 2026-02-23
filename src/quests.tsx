@@ -1,6 +1,6 @@
 import { List, ActionPanel, Action, Icon, showToast, Toast, openExtensionPreferences } from "@raycast/api";
 import { useCachedPromise } from "@raycast/utils";
-import { fetchQuests, completeQuest, updateQuestStatus } from "./api";
+import { fetchQuests, completeQuest, uncompleteQuest, updateQuestStatus } from "./api";
 import { Quest } from "./types";
 import { sortQuests } from "./utils";
 import { QuestListItem } from "./components/QuestListItem";
@@ -33,6 +33,35 @@ export default function QuestsCommand() {
     } catch (err) {
       toast.style = Toast.Style.Failure;
       toast.title = "Failed to complete quest";
+      toast.message = err instanceof Error ? err.message : "Unknown error";
+    }
+  }
+
+  async function handleUncompleteQuest(quest: Quest) {
+    const toast = await showToast({
+      style: Toast.Style.Animated,
+      title: "Reopening quest...",
+    });
+
+    try {
+      const updatedQuest = await uncompleteQuest(quest.id);
+
+      await mutate(
+        async () => {
+          const allQuests = await fetchQuests();
+          return allQuests;
+        },
+        {
+          optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
+        }
+      );
+
+      toast.style = Toast.Style.Success;
+      toast.title = "Quest Reopened";
+      toast.message = "Quest marked as incomplete";
+    } catch (err) {
+      toast.style = Toast.Style.Failure;
+      toast.title = "Failed to reopen quest";
       toast.message = err instanceof Error ? err.message : "Unknown error";
     }
   }
@@ -105,6 +134,7 @@ export default function QuestsCommand() {
               key={quest.id}
               quest={quest}
               onComplete={handleCompleteQuest}
+              onUncomplete={handleUncompleteQuest}
               onUpdateStatus={handleUpdateStatus}
               onRefresh={revalidate}
             />
@@ -119,6 +149,7 @@ export default function QuestsCommand() {
               key={quest.id}
               quest={quest}
               onComplete={handleCompleteQuest}
+              onUncomplete={handleUncompleteQuest}
               onUpdateStatus={handleUpdateStatus}
               onRefresh={revalidate}
             />
@@ -133,6 +164,7 @@ export default function QuestsCommand() {
               key={quest.id}
               quest={quest}
               onComplete={handleCompleteQuest}
+              onUncomplete={handleUncompleteQuest}
               onUpdateStatus={handleUpdateStatus}
               onRefresh={revalidate}
             />
