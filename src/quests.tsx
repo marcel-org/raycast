@@ -17,10 +17,9 @@ export default function QuestsCommand() {
     });
 
     try {
-      const updatedQuest = await completeQuest(quest.id);
-
-      await mutate(fetchQuests(), {
-        optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
+      const updatedQuest = await mutate(completeQuest(quest.id), {
+        optimisticUpdate: (data) =>
+          data?.map((q) => (q.id === quest.id ? { ...q, done: true, status: "done" as const } : q)) || [],
       });
 
       toast.style = Toast.Style.Success;
@@ -40,10 +39,8 @@ export default function QuestsCommand() {
     });
 
     try {
-      const updatedQuest = await uncompleteQuest(quest.id);
-
-      await mutate(fetchQuests(), {
-        optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
+      await mutate(uncompleteQuest(quest.id), {
+        optimisticUpdate: (data) => data?.map((q) => (q.id === quest.id ? { ...q, done: false } : q)) || [],
       });
 
       toast.style = Toast.Style.Success;
@@ -63,10 +60,8 @@ export default function QuestsCommand() {
     });
 
     try {
-      const updatedQuest = await updateQuestStatus(quest.id, newStatus);
-
-      await mutate(fetchQuests(), {
-        optimisticUpdate: (data) => data?.map((q) => (q.id === updatedQuest.id ? updatedQuest : q)) || [],
+      await mutate(updateQuestStatus(quest.id, newStatus), {
+        optimisticUpdate: (data) => data?.map((q) => (q.id === quest.id ? { ...q, status: newStatus } : q)) || [],
       });
 
       toast.style = Toast.Style.Success;
@@ -86,9 +81,7 @@ export default function QuestsCommand() {
     });
 
     try {
-      await deleteQuest(quest.id);
-
-      await mutate(fetchQuests(), {
+      await mutate(deleteQuest(quest.id), {
         optimisticUpdate: (data) => data?.filter((q) => q.id !== quest.id) || [],
       });
 
